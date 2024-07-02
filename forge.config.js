@@ -1,9 +1,34 @@
 const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 
+const path = require('path');
+
 module.exports = {
   packagerConfig: {
     asar: true,
+    ignore: [
+      '.vscode',
+      'node_modules/.vite',
+      'node_modules/.ignored',
+      'node_modules/.cache',
+      'src/*',
+      'scripts/*',
+      'README.md',
+      'yarn.lock',
+      'vite.config.js',
+      'forge.config.js',
+      '.gitignore',
+      '.eslintrc.js',
+      '.eslintignore',
+      '.prettierignore',
+      '.prettierrc.js',
+      'LICENSE',
+      '^(/src$)',
+      '^(/scripts$)',
+      '^(/out$)',
+      '^(/setup$)',
+      '^(/screenshot$)',
+    ],
   },
   rebuildConfig: {},
   makers: [

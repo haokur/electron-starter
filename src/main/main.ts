@@ -1,8 +1,10 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require('electron')
-const path = require('node:path')
+import { app, BrowserWindow } from 'electron'
+import path from 'node:path'
 
-function createWindow () {
+const isDevelopment = process.env.NODE_ENV === 'development'
+
+function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -11,12 +13,14 @@ function createWindow () {
       preload: path.join(__dirname, 'preload.js')
     }
   })
-
-  // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  if (isDevelopment) {
+    const rendererPort = process.argv[2];
+    mainWindow.loadURL(`http://localhost:${rendererPort}`);
+    mainWindow.webContents.openDevTools()
+  }
+  else {
+    mainWindow.loadFile(path.join(app.getAppPath(), 'build/renderer', 'index.html'));
+  }
 }
 
 // This method will be called when Electron has finished

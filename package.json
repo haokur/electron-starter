@@ -2,9 +2,11 @@
   "name": "electron-starter",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "build/main/main.js",
   "scripts": {
-    "start": "electron-forge start",
+    "start": "npm run dev",
+    "dev": "node scripts/dev-server.js",
+    "build": "node scripts/build.js && npm run package",
     "package": "electron-forge package",
     "make": "electron-forge make"
   },
@@ -23,6 +25,9 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
     "@electron-forge/plugin-fuses": "^7.4.0",
     "@electron/fuses": "^1.8.0",
-    "electron": "^31.1.0"
+    "cross-env": "^7.0.3",
+    "electron": "^31.1.0",
+    "typescript": "^5.5.3",
+    "vite": "^5.3.2"
   }
 }
