@@ -1,6 +1,6 @@
 const Path = require('path');
-// const vuePlugin = require('@vitejs/plugin-vue');
-// import vueJsx from '@vitejs/plugin-vue-jsx';
+const vuePlugin = require('@vitejs/plugin-vue');
+import vueJsx from '@vitejs/plugin-vue-jsx';
 
 const { defineConfig } = require('vite');
 
@@ -15,6 +15,7 @@ const config = defineConfig({
     outDir: Path.join(__dirname, 'build', 'renderer'),
     emptyOutDir: true,
   },
+  plugins: [vuePlugin(), vueJsx()],
 });
 
 module.exports = config;

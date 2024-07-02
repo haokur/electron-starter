@@ -1,1 +1,4 @@
-console.log("render","renderer.ts::1行");
+import { createApp } from "vue";
+import App from "./App.vue";
+
+createApp(App).mount("#app");
