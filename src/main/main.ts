@@ -19,7 +19,7 @@ function createWindow() {
     mainWindow.webContents.openDevTools()
   }
   else {
-    mainWindow.loadFile(path.join(app.getAppPath(), 'build/renderer', 'index.html'));
+    mainWindow.loadFile(path.join(app.getAppPath(), 'renderer', 'index.html'));
   }
 }
 

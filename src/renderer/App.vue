@@ -1,6 +1,6 @@
 <template>
   <div class="App">
-    <div><h1>Hello World from Vue3!</h1></div>
+    <div><h1>Hello World from Vue3-Vite!</h1></div>
   </div>
 </template>
 <script lang="ts" setup>

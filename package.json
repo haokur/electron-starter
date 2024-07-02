@@ -6,29 +6,19 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "node scripts/dev-server.js",
-    "build": "node scripts/build.js && npm run package",
-    "package": "electron-forge package",
-    "make": "electron-forge make"
+    "build": "node scripts/build.js && electron-builder"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "electron-squirrel-startup": "^1.0.1"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@electron-forge/cli": "^7.4.0",
-    "@electron-forge/maker-deb": "^7.4.0",
-    "@electron-forge/maker-rpm": "^7.4.0",
-    "@electron-forge/maker-squirrel": "^7.4.0",
-    "@electron-forge/maker-zip": "^7.4.0",
-    "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
-    "@electron-forge/plugin-fuses": "^7.4.0",
     "@electron/fuses": "^1.8.0",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vitejs/plugin-vue-jsx": "^4.0.0",
     "cross-env": "^7.0.3",
     "electron": "^31.1.0",
+    "electron-builder": "^24.13.3",
     "typescript": "^5.5.3",
     "vite": "^5.3.2"
   }
