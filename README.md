@@ -102,3 +102,23 @@ npm run build
 5. 更改 package.json 里的 version 来生成一个版本号,要测更新,则改一个比服务器的低版本
 6. 打包完后,打开应用,则会提示更新
 ![自动更新效果图](https://oss.haokur.com/github/electron-update.png)
+
+
+### 四、优化
+
+#### node_modules 依赖优化
+
+1. dist/mac 下的包查看包内容
+2. 安装 asar
+```
+npm install asar -g
+```
+3. 解压 app.asar
+```
+asar extract app.asar ./app
+```
+4. 查看目录下的 node_modules 文件夹
+5. 打包时,会把 package.json 下的 dependencies 里配置的依赖都打包进去
+6. 将 renderer 的依赖都移到 devDependencies 中, 因为 renderer 使用 vite 打包,会合并 node_modules 里代码
+7. 可在根目录下,electron-builder.json 中的 files 选项,添加忽略项
+

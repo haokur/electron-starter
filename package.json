@@ -12,13 +12,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "electron-updater": "^6.2.1",
+    "electron-updater": "^6.2.1"
+  },
+  "devDependencies": {
     "element-plus": "^2.7.6",
     "mousetrap": "^1.6.5",
     "pinia": "^2.1.7",
-    "vue": "^3.4.31"
-  },
-  "devDependencies": {
+    "vue": "^3.4.31",
     "@electron/fuses": "^1.8.0",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vitejs/plugin-vue-jsx": "^4.0.0",
