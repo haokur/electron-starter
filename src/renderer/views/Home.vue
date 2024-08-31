@@ -22,7 +22,7 @@
       </template>
     </el-dialog>
     <button @click="toggleDevTools">点击切换控制台</button>
-    <el-button @click="getElectronAppConfig">获取</el-button>
+    <!-- <el-button @click="getElectronAppConfig">获取</el-button> -->
   </div>
 </template>
 <script setup lang="ts">
@@ -65,11 +65,11 @@ function handleUpdaterAction() {
   updaterAppInfo.value.visible = false;
 }
 
-function getElectronAppConfig() {
-  electronEmit('getAppSystemInfo', {}, (res) => {
-    console.log(res, 'About.vue::18行');
-  });
-}
+// function getElectronAppConfig() {
+//   electronEmit('getAppSystemInfo', {}, (res) => {
+//     console.log(res, 'About.vue::18行');
+//   });
+// }
 
 onMounted(() => {
   bindKeyboardEvent();
