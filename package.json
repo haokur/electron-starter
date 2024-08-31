@@ -13,9 +13,11 @@
   "license": "ISC",
   "dependencies": {
     "@types/menubar": "^6.0.1",
+    "@types/uuid": "^10.0.0",
     "@types/vue-router": "^2.0.0",
     "electron-updater": "^6.2.1",
     "menubar": "^9.5.0",
+    "uuid": "^10.0.0",
     "vue-router": "^4.0.13"
   },
   "devDependencies": {

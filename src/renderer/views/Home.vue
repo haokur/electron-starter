@@ -22,7 +22,10 @@
       </template>
     </el-dialog>
     <button @click="toggleDevTools">点击切换控制台</button>
-    <!-- <el-button @click="getElectronAppConfig">获取</el-button> -->
+    <el-button @click="getElectronAppConfig">获取版本信息</el-button>
+
+    <el-button @click="listenMainMessage">持续监听Main消息</el-button>
+    <el-button @click="removeListenMainMessage">取消持续监听Main消息</el-button>
   </div>
 </template>
 <script setup lang="ts">
@@ -31,6 +34,7 @@ import { onBeforeUnmount, onMounted, ref, toRefs } from 'vue';
 import { electronEmit, initElectronListener, removeAllElectronEvent } from '../events/events';
 import { bindKeyboardEvent } from '../events/keyboard.handler';
 import { useVersionStore } from '../stores/version';
+import ipcHelperUtil from '../utils/ipc-helper.util';
 const { updaterAppInfo, isDownloadProgress, updateAppVersionInfo } = toRefs(useVersionStore());
 
 // 测试
@@ -65,11 +69,25 @@ function handleUpdaterAction() {
   updaterAppInfo.value.visible = false;
 }
 
-// function getElectronAppConfig() {
-//   electronEmit('getAppSystemInfo', {}, (res) => {
-//     console.log(res, 'About.vue::18行');
-//   });
-// }
+function getElectronAppConfig() {
+  ipcHelperUtil.ipcRun('getAppSystemInfo', {}, (result) => {
+    console.log(result, 'Home.vue::71行');
+  });
+}
+
+const isListenTimestamp = ref(true);
+function listenMainMessage() {
+  ipcHelperUtil.ipcWatch('sendManyMsg2Render', {}, (result, remover) => {
+    console.log(result.timestamp, 'Home.vue::80行');
+    if (!isListenTimestamp.value) {
+      remover();
+    }
+  });
+}
+
+function removeListenMainMessage() {
+  isListenTimestamp.value = !isListenTimestamp.value;
+}
 
 onMounted(() => {
   bindKeyboardEvent();

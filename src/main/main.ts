@@ -4,6 +4,8 @@ import { menubar } from 'menubar';
 
 import { initElectronUpdater } from './utils/updater.util';
 import { injectListenEvents } from './events/events';
+import { AllBrowserWindows } from './window-manager';
+import { electronUtil } from './utils/electron.util';
 const AppPath = app.getAppPath();
 
 Object.defineProperty(app, 'isPackaged', {
@@ -39,6 +41,7 @@ function createWindow() {
     });
     menubarIndexUrl = `file://${indexHtmlPath}#/about`;
   }
+  electronUtil.setMainWindow(mainWindow);
 
   const iconPath = path.join(AppPath, 'static/icons/IconTemplate.png');
   const tray = new Tray(iconPath);
@@ -110,7 +113,7 @@ function createWindow() {
   });
 
   // 监听绑定
-  injectListenEvents(mainWindow);
+  injectListenEvents();
 
   // initElectronUpdater();
 }

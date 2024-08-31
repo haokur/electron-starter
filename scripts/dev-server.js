@@ -47,11 +47,13 @@ async function startElectron() {
             return;
         }
 
-        process.stdout.write(Chalk.blueBright(`[electron] `) + Chalk.black(data.toString()))
+        // process.stdout.write(Chalk.blueBright(`[electron] `) + Chalk.black(data.toString()))
+        process.stdout.write(Chalk.black(data.toString()))
     });
 
-    electronProcess.stderr.on('data', data => 
-        process.stderr.write(Chalk.blueBright(`[electron] `) + Chalk.black(data.toString()))
+    electronProcess.stderr.on('data', data =>
+        // process.stderr.write(Chalk.blueBright(`[electron] `) + Chalk.black(data.toString()))
+        process.stderr.write(Chalk.black(data.toString()))
     );
 
     electronProcess.on('exit', () => stop());

@@ -3,28 +3,47 @@
  * 给render层发送信息方法，不需要再添加扩展
  * 固定下来的文件。
  */
-import { ipcMain } from 'electron';
+import { ipcMain, BrowserWindow } from 'electron';
 
-import { electronUtil } from '../utils/electron.util';
+import * as eventHandlerFuncs from './event-handlers';
 
-import * as eventHandlerFuncs from './event-handlers'
-
-export function injectListenEvents(win) {
-    // 监听从preload传递的消息
-    ipcMain.on("preload", async (_, action, ...args) => {
-        if (!action) {
-            throw "请传入action参数"
-        }
-        if (action && eventHandlerFuncs[action]) {
-            let result = await eventHandlerFuncs[action](...args, win)
-            console.log(`${action}的响应结果为\n${result}`);
-            if (typeof result === 'object') {
-                console.log(JSON.stringify(result), "events.ts::17行");
-            }
-            // 发送给C端
-            electronUtil.sendMessage2Render(action, result)
+export function injectListenEvents() {
+  // 监听从preload传递的消息
+  ipcMain.on('preload', async (event, action, options) => {
+    if (!action) {
+      throw '请传入action参数';
+    }
+    if (action && eventHandlerFuncs[action]) {
+      try {
+        const senderWebContents = event.sender;
+        const senderWindow = BrowserWindow.fromWebContents(senderWebContents);
+        let result = await eventHandlerFuncs[action](options, senderWindow);
+        if (typeof result === 'function') {
+          // 如果是方法，则调用执行，方法里去发送信息
+          result((data) => {
+            senderWebContents.send('replyRenderer', {
+              action,
+              result: data,
+              actionId: options.actionId,
+            });
+          });
         } else {
-            throw `action为${action},未找到该action的方法,请检查`
+          // 发送给C端
+          senderWebContents.send('replyRenderer', {
+            action,
+            result,
+            actionId: options.actionId,
+          });
+          console.log('\n\n>>>>>>>>>>>>>>>>>');
+          console.log(`${action}入参：\n${JSON.stringify(options, null, 4)}`);
+          console.log(`${action}出参：\n${JSON.stringify(result, null, 4)}`);
+          console.log('<<<<<<<<<<<<<<<<<\n');
         }
-    })
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      throw `action为${action},未找到该action的方法,请检查`;
+    }
+  });
 }
