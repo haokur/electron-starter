@@ -7,6 +7,7 @@ import 'element-plus/dist/index.css';
 
 import router from './routers/router';
 import ipcHelperUtil from './utils/ipc-helper.util';
+import { bindKeyboardEvent } from './events/keyboard.handler';
 
 const app = createApp(App);
 app.use(router).use(ElementPlus, {
@@ -14,5 +15,6 @@ app.use(router).use(ElementPlus, {
 });
 
 ipcHelperUtil.listenMainEmit();
+bindKeyboardEvent();
 
 app.mount('#app');

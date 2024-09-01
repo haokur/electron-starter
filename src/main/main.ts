@@ -1,18 +1,11 @@
 import { app, BrowserWindow, Menu, Tray } from 'electron';
 import path from 'node:path';
 import { menubar } from 'menubar';
+const { autoUpdater } = require('electron-updater');
 
-import { initElectronUpdater } from './utils/updater.util';
 import { injectListenEvents } from './events/events';
-import { AllBrowserWindows } from './window-manager';
 import { electronUtil } from './utils/electron.util';
 const AppPath = app.getAppPath();
-
-Object.defineProperty(app, 'isPackaged', {
-  get() {
-    return true;
-  },
-});
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -34,6 +27,15 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
 
     menubarIndexUrl = `http://localhost:${rendererPort}#/about`;
+
+    // 开发用来测试环境版本更新配置
+    autoUpdater.currentVersion = '0.1.0';
+    Object.defineProperty(app, 'isPackaged', {
+      get() {
+        return true;
+      },
+    });
+    autoUpdater.updateConfigPath = path.join(__dirname, '../../dev-app-update.yml');
   } else {
     const indexHtmlPath = path.join(app.getAppPath(), 'renderer', 'index.html');
     mainWindow.loadFile(indexHtmlPath, {
@@ -114,8 +116,6 @@ function createWindow() {
 
   // 监听绑定
   injectListenEvents();
-
-  // initElectronUpdater();
 }
 
 app.whenReady().then(() => {

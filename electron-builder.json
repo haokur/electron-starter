@@ -6,7 +6,7 @@
     "publish": [
         {
             "provider": "generic",
-            "url": "https://oss.haokur.com/electron-app/"
+            "url":"https://static.haokur.com/electron-app/"
         }
     ],
     "nsis": {

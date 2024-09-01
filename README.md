@@ -33,36 +33,6 @@ npm run build
 - package.json 中配置的入口(main)为 build/main/main.js
 - npm run build, 会先根据根目录 vite.config.js 打包renderer 应用,然后再执行 electron-builder 打包
 
-### main和renderer通信
-
-- 不能直接传递函数回调,使用发布订阅模式,以 action 匹配,发送传递数据,对应端处理回调数据
-- 比如调用electron执行切换控制台操作
-
-renderer 调用
-```
-const toggleDevTools = () => {
-  electronEmit('toggleDevTools', {}, (res) => {
-    console.log(res, '切换成功');
-  });
-};
-```
-
-main 定义提供方法
-
-```
-export function toggleDevTools() {
-    const currentWin: any = electronUtil.getCurrentWindow()
-    isDevtoolVisible
-        ? currentWin.closeDevTools()
-        : currentWin.openDevTools()
-    isDevtoolVisible = !isDevtoolVisible
-
-    // 调用renderer层的方法.
-    electronUtil.showNotice("切换成功~")
-    return isDevtoolVisible
-}
-```
-
 ### 三、版本更新
 
 1. 安装依赖项:
@@ -79,7 +49,7 @@ electron-builder.json 中
 "publish": [
     {
         "provider": "generic",
-        "url": "https://oss.haokur.com/electron-app/"
+        // "url": "https://static.haokur.com/electron-app/"
     }
 ]
 ```
@@ -97,11 +67,11 @@ npm run build
 ---- electron-starter-1.0.1-mac.zip
 ---- electron-starter-1.0.1.dmg
 
-以上三个文件,放到服务器如 https://oss.haokur.com/electron-app/ 的目录下
+以上三个文件,放到服务器如 https://static.haokur.com/electron-app/ 的目录下
 
 5. 更改 package.json 里的 version 来生成一个版本号,要测更新,则改一个比服务器的低版本
 6. 打包完后,打开应用,则会提示更新
-![自动更新效果图](https://oss.haokur.com/github/electron-update.png)
+![自动更新效果图](https://static.haokur.com/github/electron-update.png)
 
 
 ### 四、优化

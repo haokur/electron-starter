@@ -42,7 +42,7 @@ function _initEventListener() {
   _listenMainReply();
 }
 
-function ipcRun(action, options = {}, callback?) {
+function ipcRun(action: EventAction, options = {}, callback?) {
   if (!isInitFlag) _initEventListener();
   const actionId = uuidv4();
   listenerMap[actionId] = (...args) => {

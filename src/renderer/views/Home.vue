@@ -1,26 +1,36 @@
 <template>
   <div class="App">
-    <el-dialog v-model="updaterAppInfo.visible" :title="updaterAppInfo.title" width="30%">
-      <div class="mb16">{{ updaterAppInfo.content }}</div>
-      <div v-if="isDownloadProgress">
+    <el-dialog v-model="updateModalVisible" :title="updaterInfo.title" width="30%">
+      <div class="mb16">{{ updaterInfo.content }}</div>
+      <div v-if="updaterInfo.wip === 'download'">
         <el-progress
           :text-inside="true"
           :stroke-width="24"
-          :percentage="updaterAppInfo.percentage"
+          :percentage="updaterInfo.percentage"
           status="success"
         />
       </div>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="updaterAppInfo.visible = false">
-            {{ isDownloadProgress ? '隐藏' : '取消' }}
+          <el-button
+            type="primary"
+            @click="downloadUpdateNow"
+            v-if="updaterInfo.wip === 'available'"
+          >
+            开始下载
           </el-button>
-          <el-button type="primary" @click="handleUpdaterAction" v-if="!isDownloadProgress">
-            确定
+          <el-button
+            type="primary"
+            v-if="updaterInfo.wip === 'downloaded'"
+            @click="installLatestApp"
+          >
+            开始安装
           </el-button>
+          <el-button type="primary" v-if="updaterInfo.wip === 'install'"> 安装中 </el-button>
         </span>
       </template>
     </el-dialog>
+    <button @click="checkUpdate">检查更新</button>
     <button @click="toggleDevTools">点击切换控制台</button>
     <el-button @click="getElectronAppConfig">获取版本信息</el-button>
 
@@ -29,45 +39,56 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, toRefs } from 'vue';
+import { onBeforeUnmount, onMounted, ref, toRef, toRefs } from 'vue';
 
-import { electronEmit, initElectronListener, removeAllElectronEvent } from '../events/events';
-import { bindKeyboardEvent } from '../events/keyboard.handler';
 import { useVersionStore } from '../stores/version';
 import ipcHelperUtil from '../utils/ipc-helper.util';
-const { updaterAppInfo, isDownloadProgress, updateAppVersionInfo } = toRefs(useVersionStore());
+const { updaterAppInfo: updaterInfo } = useVersionStore();
 
-// 测试
-function testUpdate() {
-  updateAppVersionInfo.value({
-    visible: true,
-    key: 'downloadProgress',
-    title: '版本提示',
-    content: '程序包下载中，可以点击隐藏按钮关掉弹窗，在下载成功后会弹出安装提示...',
-    percentage: 30,
+const updateModalVisible = ref(false);
+// 检查版本更新
+function watchAutoUpdateInfo() {
+  ipcHelperUtil.ipcWatch('watchAutoUpdateInfo', {}, (res) => {
+    const { event, data } = res;
+    switch (event) {
+      case 'update-available':
+        updateModalVisible.value = true;
+        updaterInfo.wip = 'available';
+        break;
+      case 'download-progress':
+        // 下载进度更新
+        const { bytesPerSecond, delta, percent, total, transferred } = data;
+        updaterInfo.wip = 'download';
+        updaterInfo.percentage = +percent.toFixed(2);
+        break;
+      case 'update-downloaded':
+        updaterInfo.wip = 'downloaded';
+        break;
+      default:
+        break;
+    }
+    console.log(res, 'Home.vue::64行');
   });
 }
 
-onMounted(() => {
-  // testUpdate();
-});
+// 检查是否有最新的安装包
+function checkUpdate() {
+  ipcHelperUtil.ipcRun('checkUpdateInfo');
+}
+
+// 开始下载安装包
+function downloadUpdateNow() {
+  ipcHelperUtil.ipcRun('downloadLatestApp');
+}
+
+// 开始安装安装包
+function installLatestApp() {
+  ipcHelperUtil.ipcRun('installLatestApp');
+}
 
 const toggleDevTools = () => {
-  electronEmit('toggleDevTools', {}, (res) => {
-    console.log(res, '切换成功');
-  });
+  ipcHelperUtil.ipcRun('toggleDevTools');
 };
-
-// 现在更新app
-function handleUpdaterAction() {
-  let { key } = updaterAppInfo.value;
-  if (key === 'updateAvailable') {
-    electronEmit('electronUpdaterDownload');
-  } else if (key === 'updateDownloaded') {
-    electronEmit('electronUpdaterInstall');
-  }
-  updaterAppInfo.value.visible = false;
-}
 
 function getElectronAppConfig() {
   ipcHelperUtil.ipcRun('getAppSystemInfo', {}, (result) => {
@@ -90,11 +111,6 @@ function removeListenMainMessage() {
 }
 
 onMounted(() => {
-  bindKeyboardEvent();
-  initElectronListener();
-});
-
-onBeforeUnmount(() => {
-  removeAllElectronEvent();
+  watchAutoUpdateInfo();
 });
 </script>

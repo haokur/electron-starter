@@ -1,82 +1,70 @@
-import { electronUtil } from './electron.util';
+import { autoUpdater } from 'electron-updater';
 
-const { autoUpdater } = require('electron-updater');
+const isDevelopment = process.env.NODE_ENV === 'development';
 
-export function initElectronUpdater() {
-  // 配置提供更新的程序，及build中配置的url
-  autoUpdater.setFeedURL('https://oss.haokur.com/electron-app/');
-  // 是否自动更新，如果为true，当可以更新时(update-available)自动执行更新下载。
+const updaterFeedUrl = isDevelopment
+  ? 'http://192.168.1.103:8081/'
+  : 'https://static.haokur.com/electron-app/';
+
+// 发送给renderer的方法
+let sender = {
+  sendMessage: (data) => {
+    console.log('请使用event-handlers里的方法初始化进度更新回调方法', data);
+  },
+};
+
+// 初始化更新的监听,可以更新发送者，但是不重新监听下载进度更新事件
+let isInitListener = false;
+export function initVersionUpdater(send) {
+  sender.sendMessage = send;
+  if (isInitListener) return;
+  isInitListener = true;
+
+  autoUpdater.setFeedURL(updaterFeedUrl);
   autoUpdater.autoDownload = false;
 
-  // 1. 在渲染进程里触发获取更新，开始进行更新流程。 (根据具体需求)
-  autoUpdater.checkForUpdatesAndNotify();
-
-  listenEvents();
-}
-
-// 将日志在渲染进程里面打印出来
-function printUpdaterMessage(key, data = null) {
-  let message = {
-    updateError: '更新出错',
-    checking: '正在检查更新',
-    updateAvailable: '检测到新版本',
-    downloadProgress: '下载中',
-    updateNotAvailable: '无新版本',
-    updateDownloaded: '下载完成',
-  };
-  electronUtil.sendMessage2MainRender('electronUpdaterMessage', {
-    key: key,
-    msg: message[key],
-    data,
-  });
-}
-
-function listenEvents() {
   autoUpdater.on('error', function (error) {
-    printUpdaterMessage('updateError', error);
+    sender.sendMessage({ event: 'error', message: '出错了', data: error });
   });
 
   // 2. 开始检查是否有更新
   autoUpdater.on('checking-for-update', function () {
-    printUpdaterMessage('checking');
+    sender.sendMessage({ event: 'checking-for-update', message: '开始检查是否有更新', data: null });
   });
 
   // 3. 有更新时触发
   autoUpdater.on('update-available', function (info) {
-    // 4. 告诉渲染进程有更新，info包含新版本信息
-    printUpdaterMessage('updateAvailable', info);
+    sender.sendMessage({ event: 'update-available', data: info });
   });
 
   autoUpdater.on('update-not-available', function (info) {
-    printUpdaterMessage('updateNotAvailable');
+    sender.sendMessage({ event: 'update-not-available', data: info });
   });
 
   // 8. 下载进度，包含进度百分比、下载速度、已下载字节、总字节等
   // ps: 调试时，想重复更新，会因为缓存导致该事件不执行，下载直接完成，可找到C:\Users\40551\AppData\Local\xxx-updater\pending下的缓存文件将其删除（这是我本地的路径）
   autoUpdater.on('download-progress', function (progressObj) {
-    printUpdaterMessage('downloadProgress', progressObj);
+    sender.sendMessage({ event: 'download-progress', data: progressObj });
   });
 
   // 10. 下载完成，告诉渲染进程，是否立即执行更新安装操作
   autoUpdater.on('update-downloaded', function () {
-    printUpdaterMessage('updateDownloaded');
+    sender.sendMessage({ event: 'update-downloaded' });
   });
 }
 
-export function checkAppUpdateOnly(callback) {
-  autoUpdater.checkForUpdates(callback);
-}
-
-/**检查版本 */
-export function checkAppUpdate() {
+/**检查更新 */
+export function checkAppVersion() {
   autoUpdater.checkForUpdatesAndNotify();
 }
 
-/**确认更新 */
-export function updateAppNow() {
-  console.log('开始下载更新包', 'updater.util.ts::72行');
+/**确认下载更新 */
+export function downloadAppNow() {
   autoUpdater.downloadUpdate();
 }
+
+/**取消下载，autoUpdater并未提供方法 */
+// export function cancelDownloadApp() {}
 
 /**确认安装 */
 export function installAppNow() {

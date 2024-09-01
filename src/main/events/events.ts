@@ -26,6 +26,7 @@ export function injectListenEvents() {
               result: data,
               actionId: options.actionId,
             });
+            console.log(`watch-${action}出参：\n${JSON.stringify(data, null, 4)}`);
           });
         } else {
           // 发送给C端

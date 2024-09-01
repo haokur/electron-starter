@@ -9,10 +9,10 @@ import { app } from 'electron';
 
 import { electronUtil } from '../utils/electron.util';
 import {
-  checkAppUpdate,
-  checkAppUpdateOnly,
+  checkAppVersion,
+  initVersionUpdater,
   installAppNow,
-  updateAppNow,
+  downloadAppNow,
 } from '../utils/updater.util';
 
 /**创建文件夹 */
@@ -53,35 +53,6 @@ export async function getAppSystemInfo() {
   };
 }
 
-/**electron-updater检查版本 */
-export async function checkForUpdates() {
-  // fs.readFileSync("./ssfadf.txt")
-  let res = await new Promise((resolve, reject) => {
-    checkAppUpdateOnly((result) => {
-      resolve(result);
-    });
-  });
-  return res;
-}
-
-/**electron-updater检查版本(带消息通知) */
-export async function checkForUpdatesAndNotify() {
-  checkAppUpdate();
-  return true;
-}
-
-/**electron-updater确认下载 */
-export async function electronUpdaterDownload() {
-  updateAppNow();
-  return true;
-}
-
-/**electron-updater确认安装 */
-export async function electronUpdaterInstall() {
-  installAppNow();
-  return true;
-}
-
 /**重载应用 */
 export function reLaunch() {
   app.relaunch();
@@ -95,4 +66,27 @@ export function sendManyMsg2Render() {
       send({ timestamp: Date.now() });
     }, 3000);
   };
+}
+
+/**版本相关 */
+// 持续监听版本更新中的信息
+export function watchAutoUpdateInfo() {
+  return (send) => {
+    initVersionUpdater(send);
+  };
+}
+
+// 检查更新
+export function checkUpdateInfo() {
+  checkAppVersion();
+}
+
+// 确认下载更新
+export function downloadLatestApp() {
+  downloadAppNow();
+}
+
+// 安装更新
+export function installLatestApp() {
+  installAppNow();
 }
