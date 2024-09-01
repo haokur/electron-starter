@@ -68,6 +68,11 @@ export function sendManyMsg2Render() {
   };
 }
 
+// 监听renderer回复ipcMain主动发出的消息
+export function replyMain(data) {
+  console.log('replyMain', data, 'event-handlers.ts::73行');
+}
+
 /**版本相关 */
 // 持续监听版本更新中的信息
 export function watchAutoUpdateInfo() {

@@ -16,7 +16,7 @@ function createWindow() {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      devTools: isDevelopment,
+      // devTools: isDevelopment,
     },
   });
 
@@ -45,15 +45,16 @@ function createWindow() {
   }
   electronUtil.setMainWindow(mainWindow);
 
-  const iconPath = path.join(AppPath, 'static/icons/IconTemplate.png');
-  const tray = new Tray(iconPath);
-  const contextMenu = Menu.buildFromTemplate([
-    { label: 'Item1', type: 'radio' },
-    { label: 'Item2', type: 'radio' },
-    { label: 'Item3', type: 'radio', checked: true },
-    { label: 'Item4', type: 'radio' },
-  ]);
-  tray.setContextMenu(contextMenu);
+  // 设置原生图标菜单，最好不和弹窗形式共用
+  // const iconPath = path.join(AppPath, 'static/icons/IconTemplate.png');
+  // const tray = new Tray(iconPath);
+  // const contextMenu = Menu.buildFromTemplate([
+  //   { label: 'Item1', type: 'radio' },
+  //   { label: 'Item2', type: 'radio' },
+  //   { label: 'Item3', type: 'radio', checked: true },
+  //   { label: 'Item4', type: 'radio' },
+  // ]);
+  // tray.setContextMenu(contextMenu);
 
   function setOkIcon() {
     mb.tray.setImage(path.join(AppPath, 'static/icons/state-ok-20.png'));
@@ -82,7 +83,7 @@ function createWindow() {
   }
 
   const mb = menubar({
-    tray,
+    // tray,
     index: menubarIndexUrl,
     showDockIcon: true,
     // loadUrlOptions: {
@@ -93,7 +94,7 @@ function createWindow() {
       height: 400,
       webPreferences: {
         preload: path.join(__dirname, 'preload.js'),
-        devTools: isDevelopment,
+        // devTools: isDevelopment, // 配置为false，可禁用打开控制台
       },
     },
   });
@@ -111,7 +112,7 @@ function createWindow() {
   });
   mb.on('after-create-window', () => {
     console.log('窗体创建成功', 'main.ts::62行');
-    mb.window?.webContents.openDevTools();
+    isDevelopment && mb.window?.webContents.openDevTools();
   });
 
   // 监听绑定
