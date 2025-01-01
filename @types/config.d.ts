@@ -41,6 +41,7 @@ type EventAction =
   | 'checkForUpdates'
   | 'getAllFiles'
   | 'png2Webp'
+  | 'webp2Png'
   | 'checkLatestVersion'
   | 'checkUpdateInfo'
   | 'downloadLatestApp'

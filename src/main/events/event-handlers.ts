@@ -5,7 +5,9 @@
  */
 import fs from 'fs';
 import path from 'path';
-import { app } from 'electron';
+import { app, shell } from 'electron';
+const AppPath = app.getAppPath();
+const { exec } = require('child_process');
 
 import { electronUtil } from '../utils/electron.util';
 import {
@@ -94,4 +96,55 @@ export function downloadLatestApp() {
 // 安装更新
 export function installLatestApp() {
   installAppNow();
+}
+
+// webp2png
+export async function webp2Png(config) {
+  const { path: filePath } = config;
+
+  // 平台：win32，darwin,linux
+  const platform = process.platform;
+  // 架构：arm，arm64，x64，ia32
+  const arch = process.arch;
+
+  // 获取处理程序路径
+  const execName = platform === 'win32' ? 'dwebp.exe' : 'dwebp';
+  const execProgramerPath = path.join(
+    AppPath,
+    `static/libs/libwebp/${platform}_${arch}/bin/${execName}`,
+  );
+
+  // 使用程序执行命令 dwebp input.webp -o output.png
+  const fileBaseDir = path.dirname(filePath);
+  const fileNameWithoutExt = path.basename(filePath, path.extname(filePath));
+  const outDirPath = `${fileBaseDir}/png`;
+  if (!fs.existsSync(outDirPath)) {
+    fs.mkdirSync(outDirPath, { recursive: true });
+  }
+  const outFilePath = `${outDirPath}/${fileNameWithoutExt}.png`;
+  const execCommand = `${execProgramerPath} "${filePath}" -o "${outFilePath}"`;
+  console.log(execCommand, 'event-handlers.ts::126行');
+  const result = await new Promise<any>((resolve) => {
+    exec(execCommand, {}, (error, stdout, stderr) => {
+      let _data = { result: false, resultPath: '' };
+      if (error) {
+        console.error(`脚本执行出错: ${error.message}`);
+        resolve(_data);
+        return;
+      }
+      if (stderr) {
+        console.error(`脚本错误输出: ${stderr}`);
+        resolve({ result: true, resultPath: outFilePath });
+        return;
+      }
+      console.log(`脚本输出: ${stdout}`);
+      resolve({ result: true, resultPath: outFilePath });
+      return;
+    });
+  });
+  return result;
+}
+
+export async function openFileOrDir({ filePath }) {
+  shell.showItemInFolder(filePath);
 }
