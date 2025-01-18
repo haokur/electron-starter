@@ -6,20 +6,16 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "node scripts/dev-server.js",
-    "build": "node scripts/build.js && electron-builder"
+    "build": "node scripts/build.js && electron-builder",
+    "build2": "electron-builder"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "electron-updater": "^6.2.1",
-    "element-plus": "^2.7.6",
     "menubar": "^9.5.0",
-    "mousetrap": "^1.6.5",
-    "pinia": "^2.1.7",
-    "uuid": "^10.0.0",
-    "vue": "^3.4.31",
-    "vue-router": "^4.0.13"
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@electron/fuses": "^1.8.0",
@@ -27,7 +23,6 @@
     "@types/menubar": "^6.0.1",
     "@types/sass": "^1.45.0",
     "@types/uuid": "^10.0.0",
-    "@types/vue-router": "^2.0.0",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vitejs/plugin-vue-jsx": "^4.0.0",
     "cross-env": "^7.0.3",

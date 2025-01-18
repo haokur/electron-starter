@@ -1,0 +1,21 @@
+{
+  "name": "renderer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "dependencies": {
+    "vue": "^3.4.31",
+    "mousetrap": "^1.6.5",
+    "element-plus": "^2.7.6",
+    "@types/mousetrap": "^1.6.15",
+    "@types/vue": "^2.0.0",
+    "pinia": "^2.1.7",
+    "vue-router": "^4.0.13"
+  },
+  "license": "ISC"
+}

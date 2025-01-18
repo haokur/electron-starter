@@ -1,8 +1,7 @@
-{
+module.exports = {
     "appId": "com.electron.starter",
-    "asar": true,
     "directories": {
-        "output": "release"
+        "output": "dist"
     },
     "publish": [
         {
@@ -10,11 +9,6 @@
             "url": "https://static.haokur.com/electron-app/"
         }
     ],
-    "mac": {
-        "target": [
-            "dir","dmg"
-        ]
-    },
     "nsis": {
         "oneClick": false,
         "perMachine": false,
@@ -29,8 +23,10 @@
             "snap"
         ]
     },
+    "mac": {
+        "target": "dir"
+    },
     "files": [
-        "!src/renderer/**/*",
         "build/main/**/*",
         {
             "from": "build/renderer",
@@ -56,5 +52,6 @@
         "!scripts",
         "!build/renderer",
         "!dist"
-    ]
+    ],
+    "beforeBuild": "./scripts/electron-builder-hooks/before-build.js"
 }
