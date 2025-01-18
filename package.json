@@ -6,8 +6,7 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "node scripts/dev-server.js",
-    "build": "node scripts/build.js && electron-builder",
-    "build2": "electron-builder"
+    "build3": "node scripts/build.js"
   },
   "keywords": [],
   "author": "",

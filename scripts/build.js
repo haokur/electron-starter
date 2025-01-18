@@ -18,30 +18,34 @@ const compileTs = require("./private/tsc");
 //   JSON.stringify(packageJson, null, 2)
 // );
 
-function buildRenderer() {
-  return Vite.build({
-    configFile: Path.join(__dirname, "..", "vite.config.js"),
-    base: "./",
-    mode: "production",
-  });
-}
+// function buildRenderer() {
+//   return Vite.build({
+//     configFile: Path.join(__dirname, "..", "vite.config.js"),
+//     base: "./",
+//     mode: "production",
+//   });
+// }
 
-function buildMain() {
-  const mainPath = Path.join(__dirname, "..", "src", "main");
-  return compileTs(mainPath);
-}
+// function buildMain() {
+//   const mainPath = Path.join(__dirname, "..", "src", "main");
+//   return compileTs(mainPath);
+// }
 
-FileSystem.rmSync(Path.join(__dirname, "..", "build"), {
-  recursive: true,
-  force: true,
-});
+// FileSystem.rmSync(Path.join(__dirname, "..", "build"), {
+//   recursive: true,
+//   force: true,
+// });
 
-console.log(Chalk.blueBright("Transpiling renderer & main..."));
+// console.log(Chalk.blueBright("Transpiling renderer & main..."));
 
-Promise.allSettled([buildRenderer(), buildMain()]).then(() => {
-  console.log(
-    Chalk.greenBright(
-      "Renderer & main successfully transpiled! (ready to be built with electron-builder)"
-    )
-  );
-});
+// Promise.allSettled([buildRenderer(), buildMain()]).then(() => {
+//   console.log(
+//     Chalk.greenBright(
+//       "Renderer & main successfully transpiled! (ready to be built with electron-builder)"
+//     )
+//   );
+// });
+
+
+const { buildElectronApp } = require('./build-electron')
+buildElectronApp()

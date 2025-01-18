@@ -1,6 +1,8 @@
-{
+const isDevelopment = true
+
+module.exports = {
     "appId": "com.electron.starter",
-    "asar": true,
+    "asar": !isDevelopment,
     "directories": {
         "output": "release"
     },
@@ -11,9 +13,9 @@
         }
     ],
     "mac": {
-        "target": [
-            "dir","dmg"
-        ]
+        "target": !isDevelopment
+            ? ["dir"]
+            : ["dir", "dmg"]
     },
     "nsis": {
         "oneClick": false,
