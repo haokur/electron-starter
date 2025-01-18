@@ -47,5 +47,24 @@ const compileTs = require("./private/tsc");
 // });
 
 
-const { buildElectronApp } = require('./build-electron')
-buildElectronApp()
+const { buildElectronApp } = require('./build-electron');
+const { withTimeLogExec } = require("./private/helper");
+const { buildRenderer, buildMain, clearAppDist } = require("./build-app");
+
+async function buildRenderAndMain() {
+  await Promise.allSettled([buildRenderer(), buildMain()]).then(() => {
+    console.log(
+      Chalk.greenBright(
+        "Renderer & main successfully transpiled! (ready to be built with electron-builder)"
+      )
+    );
+  });
+}
+
+async function runAllPack() {
+  await clearAppDist()
+  await withTimeLogExec(buildRenderAndMain)
+  await withTimeLogExec(buildElectronApp)
+}
+
+withTimeLogExec(runAllPack)

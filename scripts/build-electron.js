@@ -1,17 +1,6 @@
 const { build } = require("electron-builder");
 const config = require('../electron-builder.config')
 
-// const config = {
-//     appId: "com.example.app",
-//     "asar": true,
-//     directories: {
-//         output: "release"
-//     },
-//     // mac: {
-//     //     target: ["dir"]
-//     // },
-// }
-
 async function buildElectronApp() {
     return build({ config })
         .then(() => {
