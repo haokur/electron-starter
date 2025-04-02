@@ -5,6 +5,7 @@ const { autoUpdater } = require('electron-updater');
 
 import { injectListenEvents } from './events/events';
 import { electronUtil } from './utils/electron.util';
+import { createNewWindow } from './miniwindow';
 const AppPath = app.getAppPath();
 
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -24,7 +25,7 @@ function createWindow() {
   if (isDevelopment) {
     const rendererPort = process.argv[2];
     mainWindow.loadURL(`http://localhost:${rendererPort}`);
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
 
     menubarIndexUrl = `http://localhost:${rendererPort}#/about`;
 
@@ -56,67 +57,69 @@ function createWindow() {
   // ]);
   // tray.setContextMenu(contextMenu);
 
-  function setOkIcon() {
-    mb.tray.setImage(path.join(AppPath, 'static/icons/state-ok-20.png'));
-  }
+  // function setOkIcon() {
+  //   mb.tray.setImage(path.join(AppPath, 'static/icons/state-ok-20.png'));
+  // }
 
-  function setStaticIcon() {
-    mb.tray.setImage(path.join(AppPath, 'static/icons/IconTemplate.png'));
-  }
+  // function setStaticIcon() {
+  //   mb.tray.setImage(path.join(AppPath, 'static/icons/IconTemplate.png'));
+  // }
 
-  function frame() {
-    setTimeout(() => mb.tray.setImage(path.join(AppPath, 'static/icons/state-sync-20.png')), 300);
-    setTimeout(
-      () => mb.tray.setImage(path.join(AppPath, 'static/icons/state-sync-20-60.png')),
-      600,
-    );
-    setTimeout(
-      () => mb.tray.setImage(path.join(AppPath, 'static/icons/state-sync-20-120.png')),
-      900,
-    );
-  }
+  // function frame() {
+  //   setTimeout(() => mb.tray.setImage(path.join(AppPath, 'static/icons/state-sync-20.png')), 300);
+  //   setTimeout(
+  //     () => mb.tray.setImage(path.join(AppPath, 'static/icons/state-sync-20-60.png')),
+  //     600,
+  //   );
+  //   setTimeout(
+  //     () => mb.tray.setImage(path.join(AppPath, 'static/icons/state-sync-20-120.png')),
+  //     900,
+  //   );
+  // }
 
-  function sleep(ms) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms);
-    });
-  }
+  // function sleep(ms) {
+  //   return new Promise((resolve) => {
+  //     setTimeout(resolve, ms);
+  //   });
+  // }
 
-  const mb = menubar({
-    // tray,
-    index: menubarIndexUrl,
-    showDockIcon: true,
-    // loadUrlOptions: {
-    //   query: { hash: '#/about' },
-    // },
-    browserWindow: {
-      width: 400,
-      height: 400,
-      webPreferences: {
-        preload: path.join(__dirname, 'preload.js'),
-        // devTools: isDevelopment, // 配置为false，可禁用打开控制台
-      },
-    },
-  });
+  // const mb = menubar({
+  //   // tray,
+  //   index: menubarIndexUrl,
+  //   showDockIcon: true,
+  //   // loadUrlOptions: {
+  //   //   query: { hash: '#/about' },
+  //   // },
+  //   browserWindow: {
+  //     width: 400,
+  //     height: 400,
+  //     webPreferences: {
+  //       preload: path.join(__dirname, 'preload.js'),
+  //       // devTools: isDevelopment, // 配置为false，可禁用打开控制台
+  //     },
+  //   },
+  // });
 
-  mb.on('ready', () => {
-    // tray.removeAllListeners();
-    // 加载动画，轮询执行
-    const trayAnimation = setInterval(frame, 1000);
-    // 三秒后结束动画
-    sleep(3000).then(() => {
-      clearInterval(trayAnimation);
-      setOkIcon();
-      setTimeout(setStaticIcon, 400);
-    });
-  });
-  mb.on('after-create-window', () => {
-    console.log('窗体创建成功', 'main.ts::62行');
-    isDevelopment && mb.window?.webContents.openDevTools();
-  });
+  // mb.on('ready', () => {
+  //   // tray.removeAllListeners();
+  //   // 加载动画，轮询执行
+  //   const trayAnimation = setInterval(frame, 1000);
+  //   // 三秒后结束动画
+  //   sleep(3000).then(() => {
+  //     clearInterval(trayAnimation);
+  //     setOkIcon();
+  //     setTimeout(setStaticIcon, 400);
+  //   });
+  // });
+  // mb.on('after-create-window', () => {
+  //   console.log('窗体创建成功', 'main.ts::62行');
+  //   isDevelopment && mb.window?.webContents.openDevTools();
+  // });
 
   // 监听绑定
   injectListenEvents();
+
+  createNewWindow();
 }
 
 app.whenReady().then(() => {

@@ -17,11 +17,11 @@ const config = defineConfig({
     emptyOutDir: true,
   },
   plugins: [
-    // copyStaticPlugin({
-    //   targets: [
-    //     { src: 'public/imgs/*', dest: 'build/main/imgs/' }
-    //   ],
-    // }),
+    copyStaticPlugin({
+      targets: [
+        { src: Path.join(__dirname, 'src', 'renderer/miniwindow.html'), dest: 'build/renderer/miniwindow.html' },
+      ],
+    }),
     vuePlugin(),
     vueJsx()
   ],
